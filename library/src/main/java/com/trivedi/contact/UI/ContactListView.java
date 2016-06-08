@@ -34,6 +34,10 @@ import com.trivedi.contact.UI.utils.InitiateSearch;
 
 import java.util.ArrayList;
 
+
+
+//A highly customized library which fetch all the phone contacts and display them nicely in a listview
+
 /**
  * Created by Neeraj on 26/5/16.
  */
@@ -53,7 +57,7 @@ public class ContactListView extends FrameLayout implements DataCallback,OnCheck
 
     private boolean _mHeadershow = false;
 
-    private boolean _mLoadershow = false;
+    private boolean _mLoadershow = true;
 
     private int _mContactBackground;
 
