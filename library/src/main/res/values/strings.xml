@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Library</string>
+    <string name="imate_back">Back</string>
+    <string name="edit_text_search">SEARCH</string>
+    <string name="voice_cancel">Voice Cancel</string>
+    <string name="please_wait_message">Please Wait...</string>
+    <string name="fetching_contact_title">Fetching Contacts</string>
+    <string name="contact_list_title">Contact List</string>
+    <string name="please_select_people_to_proceed">Please Select People to Proceed</string>
+</resources>

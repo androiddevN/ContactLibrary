@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center|left"
+    android:padding="@dimen/contact_row_container_padding"
+    android:weightSum="1">
+
+    <com.trivedi.contact.UI.ui.AvatarImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/avatar_default_size"
+        android:layout_height="@dimen/avatar_default_size"
+        android:src="@drawable/default_avatar"
+      />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center|left"
+        >
+    <TextView
+        android:id="@+id/avatar_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/avatar_name_padding"
+        android:text="Avatar Name"
+        android:inputType="textPersonName"
+        android:capitalize="words"
+        android:textSize="@dimen/avatar_text_size"
+        android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/avatar_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+919876543210"
+            android:inputType="phone"
+            android:visibility="gone"
+            android:capitalize="words"
+            android:paddingLeft="@dimen/avatar_name_padding"
+            android:textSize="@dimen/avatar_num_text_size"
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <CheckBox
+        android:id="@+id/selectBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        />
+</LinearLayout>
