@@ -5,15 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,6 +19,7 @@ import com.trivedi.contact.UI.R;
 import com.trivedi.contact.UI.filter.ContactFilter;
 import com.trivedi.contact.UI.indexer.StringArrayAlphabetIndexer;
 import com.trivedi.contact.UI.ui.AvatarImageView;
+import com.trivedi.contact.UI.utils.CircularContactView;
 import com.trivedi.contact.UI.utils.ContactImageUtil;
 import com.trivedi.contact.UI.utils.ImageCache;
 import com.trivedi.contact.UI.utils.LibUtils;
@@ -31,11 +28,12 @@ import com.trivedi.contact.UI.utils.async_task_thread_pool.AsyncTaskThreadPool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
- * Created by Neeraj on 26/5/16.
+ * Created by Neeraj on 10/6/16.
  */
-public class SimpleContactAdapter extends BaseAdapter implements Filterable {
+public class SimpleIndexContactAdapter extends SearchablePinnedHeaderListViewAdapter<People> {
 
     Context _mContext;
     ContactListView _mContactListView;
@@ -47,7 +45,9 @@ public class SimpleContactAdapter extends BaseAdapter implements Filterable {
     private final int CONTACT_PHOTO_IMAGE_SIZE;
     private final AsyncTaskThreadPool mAsyncTaskThreadPool = new AsyncTaskThreadPool(1, 2, 10);
 
-    public SimpleContactAdapter(Context _mContext, ContactListView _mContactListView, ArrayList<People> peopleArrayList, ArrayList<People> selectedPeopleList, ArrayList<People> filterPeopleArrayList) {
+    private final int[] PHOTO_TEXT_BACKGROUND_COLORS;
+
+    public SimpleIndexContactAdapter(Context _mContext, ContactListView _mContactListView, ArrayList<People> peopleArrayList, ArrayList<People> selectedPeopleList, ArrayList<People> filterPeopleArrayList) {
         this._mContactListView = _mContactListView;
         this._mContext = _mContext;
         this.peopleArrayList = peopleArrayList;
@@ -59,45 +59,76 @@ public class SimpleContactAdapter extends BaseAdapter implements Filterable {
         } else {
             CONTACT_PHOTO_IMAGE_SIZE = 50;
         }
-    }
+        PHOTO_TEXT_BACKGROUND_COLORS = _mContext.getResources().getIntArray(R.array.contacts_text_background_colors);
 
-
-    @Override
-    public int getCount() {
-        return peopleArrayList.size();
+        setData();
     }
 
     @Override
-    public People getItem(int position) {
-        return peopleArrayList.get(position);
+    public void notifyDataSetChanged() {
+        setData();
+        super.notifyDataSetChanged();
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
+    public CharSequence getSectionTitle(int sectionIndex) {
+        return ((StringArrayAlphabetIndexer.AlphaBetSection) getSections()[sectionIndex]).getName();
+    }
+
+    public void setData() {
+        final String[] generatedContactNames = generateContactNames(peopleArrayList);
+        setSectionIndexer(new StringArrayAlphabetIndexer(generatedContactNames, true));
+    }
+
+
+    private String[] generateContactNames(final List<People> contacts) {
+        final ArrayList<String> contactNames = new ArrayList<String>();
+        if (contacts != null)
+            for (final People contactEntity : contacts)
+                contactNames.add(contactEntity.getName());
+        return contactNames.toArray(new String[contactNames.size()]);
     }
 
     @Override
-    public View getView(final int position, final View convertView, final ViewGroup parent) {
+    public boolean doFilter(People item, CharSequence constraint) {
+        if (TextUtils.isEmpty(constraint))
+            return true;
+        final String displayName = item.getName();
+        return !TextUtils.isEmpty(displayName) && displayName.toLowerCase(Locale.getDefault())
+                .contains(constraint.toString().toLowerCase(Locale.getDefault()));
+    }
+
+    @Override
+    public ArrayList<People> getOriginalList() {
+        return peopleArrayList;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
         final ViewHolder holder;
         final View rootView;
-
-        if (convertView == null || position==0) {
+        if (convertView == null) {
             holder = new ViewHolder();
-            rootView = _mLayoutInflator.inflate(R.layout.row_view, parent, false);
+            rootView = _mLayoutInflator.inflate(R.layout.index_row_view, parent, false);
             holder.container = rootView;
             holder.avatar_name = (TextView) rootView.findViewById(R.id.avatar_name);
+            holder.headerView = (TextView) rootView.findViewById(R.id.header_text);
             holder.number = (TextView) rootView.findViewById(R.id.avatar_num);
             holder.selectBox = (CheckBox) rootView.findViewById(R.id.selectBox);
-            holder.avatarImageView = (AvatarImageView) rootView.findViewById(R.id.avatar);
+            holder.avatarImageView = (CircularContactView) rootView.findViewById(R.id.avatar);
             rootView.setTag(holder);
         } else {
             rootView = convertView;
             holder = (ViewHolder) rootView.getTag();
         }
+
         configureLayout(holder);
         final People people = getItem(position);
+        if(people.getName()!=null && people.getName().length()>0)
         holder.avatar_name.setText(people.getName());
+        else
+            holder.avatar_name.setText("Unkown");
         holder.number.setText(people.getPhone());
 
         if (_mContactListView.isMultiSelectEnable()) {
@@ -128,14 +159,20 @@ public class SimpleContactAdapter extends BaseAdapter implements Filterable {
 
             if (holder.updateTask != null && !holder.updateTask.isCancelled())
                 holder.updateTask.cancel(true);
-
-
             boolean hasPhoto = !TextUtils.isEmpty(people.getPhotoId());
             final Bitmap cachedBitmap = hasPhoto ? ImageCache.INSTANCE.getBitmapFromMemCache(people.getPhotoId()) : null;
             if (cachedBitmap != null)
                 holder.avatarImageView.setImageBitmap(cachedBitmap);
             else {
-                holder.avatarImageView.setImageResource(R.drawable.default_avatar);
+                final int backgroundColorToUse = PHOTO_TEXT_BACKGROUND_COLORS[position
+                        % PHOTO_TEXT_BACKGROUND_COLORS.length];
+                if (TextUtils.isEmpty(people.getName()))
+                    holder.avatarImageView.setImageResource(R.drawable.ic_person_white_120dp,
+                            backgroundColorToUse);
+                else {
+                    final String characterToShow = TextUtils.isEmpty(people.getName()) ? "" : people.getName().substring(0, 1).toUpperCase(Locale.getDefault());
+                    holder.avatarImageView.setTextAndBackgroundColor(characterToShow, backgroundColorToUse);
+                }
                 if (hasPhoto) {
                     holder.updateTask = new AsyncTaskEx<Void, Void, Bitmap>() {
                         @Override
@@ -162,20 +199,18 @@ public class SimpleContactAdapter extends BaseAdapter implements Filterable {
                 }
             }
         }
+
+        bindSectionHeader(holder.headerView, null, position);
         return rootView;
     }
 
-    @Override
-    public Filter getFilter() {
-        if (_mContactFilter == null)
-            _mContactFilter = new ContactFilter(_mContext, filterPeopleArrayList, peopleArrayList, this);
-        return _mContactFilter;
-    }
+
+
 
     private static class ViewHolder {
         View container;
-        TextView avatar_name, number;
-        AvatarImageView avatarImageView;
+        TextView avatar_name, number,headerView;
+        CircularContactView avatarImageView;
         CheckBox selectBox;
         public AsyncTaskEx<Void, Void, Bitmap> updateTask;
     }
@@ -189,7 +224,6 @@ public class SimpleContactAdapter extends BaseAdapter implements Filterable {
         viewHolder.avatar_name.setTextSize(LibUtils.pxToDp(_mContext, (int) _mContactListView.getContactRowTxtSize()));
         viewHolder.avatar_name.setTextColor(_mContactListView.getContactRowTxtColor());
         viewHolder.container.setBackgroundColor(_mContactListView.getContactBackground());
-        viewHolder.number.setTextColor(_mContext.getResources().getColor(R.color.text_color));
         if (_mContactListView.isNameOnly()) {
             viewHolder.number.setVisibility(View.GONE);
         } else {

@@ -3,6 +3,7 @@ package com.trivedi.contact.UI.utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -78,6 +79,7 @@ public class CircularContactView extends ViewSwitcher
     else if(mText!=null)
       {
       mTextView.setText(mText);
+      mTextView.setTextColor(Color.parseColor("#ffffff"));
       mTextView.setBackgroundDrawable(roundedBackgroundDrawable);
       mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, viewHeight / 2);
       }

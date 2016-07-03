@@ -12,19 +12,22 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 
 public class InitiateSearch {
 
-    public static void handleToolBar(final Context context, final CardView search, final View view, final EditText editText) {
+    public static void handleToolBar(final Context context, final CardView search, final View view, final EditText editText,final ImageButton _mSearchButton) {
 
         final Animation fade_in = AnimationUtils.loadAnimation(context.getApplicationContext(), android.R.anim.fade_in);
         final Animation fade_out = AnimationUtils.loadAnimation(context.getApplicationContext(), android.R.anim.fade_out);
 
         if (search.getVisibility() == View.VISIBLE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+
                 final Animator animatorHide = ViewAnimationUtils.createCircularReveal(search,
-                        search.getWidth() - (int) convertDpToPixel(30, context),
+                        search.getWidth() - (int) convertDpToPixel(45, context),
                         (int) convertDpToPixel(23, context),
                         (float) Math.hypot(search.getWidth(), search.getHeight()),
                         0);
@@ -65,7 +68,7 @@ public class InitiateSearch {
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 final Animator animator = ViewAnimationUtils.createCircularReveal(search,
-                        search.getWidth() - (int) convertDpToPixel(56, context),
+                        search.getWidth() - (int) convertDpToPixel(45, context),
                         (int) convertDpToPixel(23, context),
                         0,
                         (float) Math.hypot(search.getWidth(), search.getHeight()));

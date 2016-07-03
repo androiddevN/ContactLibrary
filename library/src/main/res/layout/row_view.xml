@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center|left"
     android:padding="@dimen/contact_row_container_padding"
+    android:descendantFocusability="blocksDescendants"
     android:weightSum="1">
 
     <com.trivedi.contact.UI.ui.AvatarImageView

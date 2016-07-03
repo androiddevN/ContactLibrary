@@ -1,0 +1,63 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/searchMenu"
+        android:icon="@drawable/ic_search_white"
+        android:title="Search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always|collapseActionView"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/doneBtn"
+        android:title="Done"
+        app:showAsAction="always"
+        android:visible="false"
+        android:icon="@drawable/ic_done_white"
+        ></item>
+
+    <item
+        android:title="More"
+        android:icon="@drawable/ic_more_vert_white"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group
+                android:checkableBehavior="single"
+                android:orderInCategory="1"
+                android:menuCategory="container">
+                <item
+                    android:id="@+id/multipleMenu"
+                    android:title="Multiple"
+                    android:orderInCategory="2"
+                    android:icon="@drawable/ic_people_black"
+                    android:checkable="true">
+                </item>
+            </group>
+            <item
+                android:id="@+id/selectAllbtn"
+                android:title="Select All"
+                android:icon="@drawable/ic_select"
+                android:orderInCategory="3"
+                android:checkable="false"
+                android:visible="false">
+            </item>
+            <item
+                android:id="@+id/searchenable"
+                android:title="Enable Search"
+                android:icon="@drawable/ic_search_black"
+                android:orderInCategory="3"
+                android:checkable="false">
+            </item>
+
+            <item
+                android:id="@+id/indexenable"
+                android:title="Index List"
+                android:icon="@drawable/ic_list_black"
+                android:orderInCategory="3"
+                android:checkable="false">
+            </item>
+        </menu>
+    </item>
+
+</menu>

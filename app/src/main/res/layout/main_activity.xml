@@ -4,22 +4,31 @@
     android:layout_height="match_parent"
     xmlns:custom="http://schemas.android.com/apk/res-auto">
 
+
+    <!--<com.trivedi.contact.UI.ContactListView-->
+        <!--android:id="@+id/contactList"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--custom:contact_row_background="@color/WHITE"-->
+        <!--custom:contact_background="#E6E6DC"-->
+        <!--custom:row_divider_height="1dp"-->
+        <!--custom:contact_row_text_size="18sp"-->
+        <!--custom:contact_row_text_color="@color/text_color"-->
+        <!--custom:show_avatar="true"-->
+        <!--custom:show_header="true"-->
+        <!--custom:show_name_only="false"-->
+        <!--custom:multiselect_enable="true"-->
+        <!--custom:search_enable="true"-->
+        <!--custom:header_bg_color="#3289C8"-->
+        <!--custom:show_loading_progress="true"-->
+        <!--custom:avatar_size="35dp"-->
+        <!--custom:cache_enable="false"-->
+        <!--custom:indexableview="false"-->
+        <!--/>-->
+
     <com.trivedi.contact.UI.ContactListView
         android:id="@+id/contactList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        custom:contact_row_background="@color/WHITE"
-        custom:contact_background="#E6E6DC"
-        custom:row_divider_height="1dp"
-        custom:contact_row_text_size="18sp"
-        custom:contact_row_text_color="@color/text_color"
-        custom:show_avatar="true"
-        custom:show_header="true"
-        custom:show_name_only="false"
-        custom:multiselect_enable="true"
-        custom:search_enable="true"
-        custom:header_bg_color="#3289C8"
-        custom:show_loader="true"
-        custom:avatar_size="20dp"
         />
 </LinearLayout>
